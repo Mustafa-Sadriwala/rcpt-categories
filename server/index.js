@@ -16,7 +16,7 @@ app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'index.html'));
 });
 
-app.get('/getrequest/:param1', (req, res) => {
+app.get('/api', (req, res) => {
   var business = req.query.business;
 
   res.send('get request received :)')
