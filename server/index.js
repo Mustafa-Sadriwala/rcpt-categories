@@ -10,38 +10,14 @@ const port = isDeveloping ? 3000 : process.env.PORT;
 const app = express();
 const bodyParser = require('body-parser')
 
-if (isDeveloping) {
-  const compiler = webpack(config);
-  const middleware = webpackMiddleware(compiler, {
-    publicPath: config.output.publicPath,
-    contentBase: 'src',
-    stats: {
-      colors: true,
-      hash: false,
-      timings: true,
-      chunks: false,
-      chunkModules: false,
-      modules: false,
-    },
-  });
+app.use(express.static(path.join(__dirname, '/../dist')));
+app.get('*', bodyParser, async (req, res) => {
+  var rcpt = bodyParser.json();
 
-  app.use(middleware);
-  app.use(bodyParser.json()); // support json encoded bodies
-  app.use(webpackHotMiddleware(compiler));
-  app.get('*', (req, res) => {
-    res.write(middleware.fileSystem.readFileSync(path.join(__dirname, '/../dist/index.html')));
-    res.end();
-  });
-} else {
-  app.use(express.static(path.join(__dirname, '/../dist')));
-  app.get('*', bodyParser, async (req, res) => {
-    var rcpt = bodyParser.json();
-
-    var json = {'text': 'hi'};
-    res.send(json);
-    //res.sendFile(path.join(__dirname, 'index.html'));
-  });
-}
+  var json = {'text': 'hi'};
+  res.send(json);
+  //res.sendFile(path.join(__dirname, 'index.html'));
+});
 
 app.listen(port, (err) => {
   if (err) {
