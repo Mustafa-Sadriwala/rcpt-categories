@@ -10,14 +10,17 @@ const port = isDeveloping ? 3000 : process.env.PORT;
 const app = express();
 const bodyParser = require('body-parser')
 
+app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, '/../dist')));
-app.get('*', bodyParser, async (req, res) => {
-  var rcpt = bodyParser.json();
-
-  var json = {'text': 'hi'};
-  res.send(json);
-  //res.sendFile(path.join(__dirname, 'index.html'));
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'index.html'));
 });
+
+app.get('/getrequest/:param1', bodyParser, (req, res) => {
+  var business = req.query.business;
+
+  res.send('You\'re business type: ' + business.toString())
+})
 
 app.listen(port, (err) => {
   if (err) {
