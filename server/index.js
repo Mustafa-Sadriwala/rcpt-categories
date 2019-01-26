@@ -19,9 +19,10 @@ app.get('/', (req, res) => {
 });
 
 app.get('/api', async (req, res) => {
-  let business = req.query.business.toString();
+  //let business = req.query.business.toString();
+  let address = req.query.address.toString();
   let response = await fetch('https://maps.googleapis.com/maps/api/place/findplacefromtext/json?' +
-          'input=' + business +
+          'input=' + address +
           '&locationbias=ipbias' +
           '&inputtype=textquery' +
           '&fields=types' +
