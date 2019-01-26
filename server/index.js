@@ -8,6 +8,7 @@ const config = require('../config/webpack.config.js');
 const isDeveloping = process.env.NODE_ENV !== 'production';
 const port = isDeveloping ? 3000 : process.env.PORT;
 const app = express();
+const bodyParser = require('body-parser')
 
 if (isDeveloping) {
   const compiler = webpack(config);
@@ -25,6 +26,7 @@ if (isDeveloping) {
   });
 
   app.use(middleware);
+  app.use(bodyParser.json()); // support json encoded bodies
   app.use(webpackHotMiddleware(compiler));
   app.get('*', (req, res) => {
     res.write(middleware.fileSystem.readFileSync(path.join(__dirname, '/../dist/index.html')));
@@ -32,8 +34,12 @@ if (isDeveloping) {
   });
 } else {
   app.use(express.static(path.join(__dirname, '/../dist')));
-  app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, 'index.html'));
+  app.get('*', bodyParser, async (req, res) => {
+    var rcpt = bodyParser.json();
+
+    var json = {'text': 'hi'};
+    res.send(json);
+    //res.sendFile(path.join(__dirname, 'index.html'));
   });
 }
 
