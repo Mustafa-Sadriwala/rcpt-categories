@@ -19,7 +19,7 @@ app.get('/', (req, res) => {
 app.get('/api', (req, res) => {
   var business = req.query.business;
 
-  res.send('get request received :)')
+  res.send(business.toString())
 })
 
 app.listen(port, (err) => {
