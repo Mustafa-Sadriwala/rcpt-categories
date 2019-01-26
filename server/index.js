@@ -12,14 +12,14 @@ const bodyParser = require('body-parser')
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, '/../dist')));
-app.get('*', (req, res) => {
+app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'index.html'));
 });
 
 app.get('/getrequest/:param1', bodyParser, (req, res) => {
   var business = req.query.business;
 
-  res.send('You\'re business type: ' + business.toString())
+  res.send('get request received :)')
 })
 
 app.listen(port, (err) => {
