@@ -14,12 +14,18 @@ const bodyParser = require('body-parser')
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, '/../dist')));
 
+function sanitizeString(str){
+  str = str.replace(/[^a-z0-9_-]/gim,"");
+  return str.trim();
+}
+
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'index.html'));
 });
 
 app.get('/api', async (req, res) => {
   let business = req.query.business.toString();
+  business = sanitizeString(business);
   //let address = req.query.address.toString();
   let response = await fetch('https://maps.googleapis.com/maps/api/place/findplacefromtext/json?' +
           'input=' + business +
@@ -29,8 +35,15 @@ app.get('/api', async (req, res) => {
           '&key=AIzaSyABT9mnqWYl1vFrfZHoXjMklVX4ooxtKps');
   response = await response.json();
 
-  let json = {'categories': response.candidates[0].types.slice(0,3)}
-  res.send(json)
+  if (response.status != "OK")
+  {
+    res.send({'status' : 'FAILURE'})
+  }
+  else {
+    res.send({'categories': response.candidates[0].types.slice(0,3),
+                  'status': response.status})
+  }
+ 
 })
 
 app.listen(port, (err) => {
